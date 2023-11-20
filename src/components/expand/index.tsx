@@ -24,7 +24,9 @@ export function BottomSection(props: IBottomSectionProps) {
     <div className=' border-t-[1px] border-[#ffffff20] mt-10 flex-none px-8 pt-8'>
       <p className='text-white font-semibold text-2xl'>{`${props.stop} stops ${props.km} km`}</p>
       <p className='text-[#ffffff50] text-xs max-w-[266px]'>
-        {props.stops.map((stop) => `${stop},`)}
+        {props.stops.map((stop, index, array) =>
+          index === array.length - 1 ? `${stop}` : `${stop}, `
+        )}
       </p>
       {props.children}
     </div>
