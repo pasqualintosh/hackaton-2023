@@ -4,5 +4,5 @@ export { Submit } from './submit/index';
 export { Separator } from './separator/index';
 export { IconWrapper } from './incon-wrapper';
 export { Pin } from './pin';
-export { Expand, ExpandWrapper, BottomSection } from './expand';
+export { ExpandButton, ExpandWrapper, BottomSection } from './expand';
 export { Panel } from './panel';
