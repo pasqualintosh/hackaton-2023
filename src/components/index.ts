@@ -1,1 +1,1 @@
-export * as Map from './map';
+export { Map } from './map/index';
