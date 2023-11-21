@@ -6,8 +6,9 @@ import {
   Popup,
   Source,
 } from 'react-map-gl';
-import { INode, mockRoute } from '../../hooks/use-fetch-data';
+import { INode } from '../../hooks/use-fetch-data';
 import { useMemo, useRef, useState } from 'react';
+import { DestinationPoint, StartPoint } from '..';
 
 export const layer = {
   id: 'route',
@@ -24,8 +25,8 @@ export const layer = {
 };
 
 const initialViewState = {
-  latitude: 43.7800525,
-  longitude: 11.1585671,
+  latitude: 41.926667,
+  longitude: 8.736944,
   zoom: 5,
   bearing: 0,
   pitch: 0,
@@ -47,9 +48,18 @@ export interface IPopupProps {
 }
 function PopupContent({ type, label }: IPopupProps) {
   return (
-    <div className='bg-white rounded-md justify-center items-center'>
-      <p>{type === 'start' ? 'Starting point' : 'Destination'}</p>
-      <p>{label}</p>
+    <div className='bg-white rounded-xl justify-center items-center px-1'>
+      <div className='flex flex-row justify-center items-center'>
+        <div className='mr-5'>
+          {type === 'start' ? <StartPoint /> : <DestinationPoint />}
+        </div>
+        <div className=''>
+          <p className='font-semibold text-md text-primary-grey'>
+            {type === 'start' ? 'Starting point' : 'Destination'}
+          </p>
+          <p className='font-semibold text-xs '>{label}</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -79,39 +89,55 @@ export function Map({
 
   const pins = useMemo(
     () =>
-      nodes.map((node, index) => (
-        <Marker
-          key={`marker-${index}`}
-          longitude={node.longitude}
-          latitude={node.latitude}
-          anchor='top'
-          onClick={(e) => {
-            e.originalEvent.stopPropagation();
-            if (!popupA) {
-              start(node.name);
-              setPopupA({
-                type: 'start',
-                latitude: node.latitude,
-                longitude: node.longitude,
-                label: node.name,
-              });
-            } else {
-              console.log('aa');
-              destination(node.name);
-              setPopupB({
-                type: 'end',
-                latitude: node.latitude,
-                longitude: node.longitude,
-                label: node.name,
-              });
-            }
-          }}
-        >
-          <div className='bg-white h-[32px] w-[32px] rounded-3xl justify-center items-center flex'>
-            <div className='bg-primary-grey h-[20px] w-[20px] rounded-3xl'></div>
-          </div>
-        </Marker>
-      )),
+      nodes.map((node, index) => {
+        const isStartPoint =
+          node.latitude === popupA?.latitude &&
+          node.longitude === popupA?.longitude;
+
+        const isDestinationPoint =
+          node.latitude === popupB?.latitude &&
+          node.longitude === popupB?.longitude;
+
+        const isSelected = isStartPoint || isDestinationPoint;
+
+        return (
+          <Marker
+            key={`marker-${index}`}
+            longitude={node.longitude}
+            latitude={node.latitude}
+            anchor='top'
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              if (!popupA) {
+                start(node.name);
+                setPopupA({
+                  type: 'start',
+                  latitude: node.latitude,
+                  longitude: node.longitude,
+                  label: node.name,
+                });
+              } else {
+                console.log('aa');
+                destination(node.name);
+                setPopupB({
+                  type: 'end',
+                  latitude: node.latitude,
+                  longitude: node.longitude,
+                  label: node.name,
+                });
+              }
+            }}
+          >
+            <div
+              className={`bg-white h-[32px] w-[32px] rounded-3xl justify-center items-center flex ${
+                isSelected ? ' shadow-2xl shadow-[#ffffff80]' : ''
+              }`}
+            >
+              <div className='bg-primary-grey h-[20px] w-[20px] rounded-3xl'></div>
+            </div>
+          </Marker>
+        );
+      }),
     [destination, nodes, popupA, popupB, start]
   );
 
@@ -130,8 +156,6 @@ export function Map({
       style={{ width: '100%', height: '100vh' }}
       initialViewState={{
         ...initialViewState,
-        latitude: nodes[0].latitude,
-        longitude: nodes[0].longitude,
       }}
       mapStyle='mapbox://styles/mapbox/dark-v9'
     >

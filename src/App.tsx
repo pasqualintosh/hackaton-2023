@@ -6,8 +6,7 @@ import {
   ContentWrapper,
   Dots,
   EmptyWrapper,
-  ExpandButton,
-  ExpandWrapper,
+  FullScreen,
   IconWrapper,
   Input,
   InputWrapper,
@@ -84,18 +83,21 @@ export default function App() {
           </div>
         </ContentWrapper>
 
+        {!isExpandMode && (
+          <div
+            className='absolute top-[18px] right-[30px]'
+            onClick={() => setIsExpandMode(!isExpandMode)}
+          >
+            <FullScreen />
+          </div>
+        )}
+
         <BottomSection
           stop={20}
           stops={['Ancona', 'Agrigiento', 'Firenze', 'Roma']}
           km='15'
           isFullscreen={isExpandMode}
-        >
-          <ExpandWrapper>
-            {!isExpandMode && (
-              <ExpandButton onClick={() => setIsExpandMode(!isExpandMode)} />
-            )}
-          </ExpandWrapper>
-        </BottomSection>
+        />
       </Panel>
       <Landing />
     </div>

@@ -12,7 +12,7 @@ export function Panel(props: IProps) {
   }
 
   return (
-    <div className='absolute top-[172px] left-[30px] bg-primary-default rounded-xl  py-14 justify-center items-center'>
+    <div className='absolute top-[172px] left-[30px] ml-[30px] bg-primary-default rounded-xl  py-14 justify-center items-center'>
       {props.children}
     </div>
   );
