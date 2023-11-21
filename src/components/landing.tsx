@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { People } from './icons';
 
 const Landing: React.FC = () => {
   const [isVisible, setIsVisible] = React.useState(true);
@@ -21,7 +20,9 @@ const Landing: React.FC = () => {
         >
           START
         </button>
-        <People />
+        <div className='absolute bottom-[70px] left-[100px]'>
+          <img src='/people.png' />
+        </div>
       </div>
     </div>
   );
