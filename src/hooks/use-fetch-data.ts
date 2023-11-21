@@ -81,6 +81,21 @@ const mockNodes = [
   },
 ];
 
+export const mockRoute = [
+  {
+    id: 7,
+    name: 'Asti',
+    latitude: 44.8833,
+    longitude: 8.2,
+  },
+  {
+    id: 13,
+    name: 'Bergamo',
+    latitude: 45.7,
+    longitude: 9.6667,
+  },
+];
+
 export interface INode {
   id: number;
   name: string;

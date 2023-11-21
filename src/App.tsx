@@ -25,14 +25,19 @@ export default function App() {
   const [isExpandMode, setIsExpandMode] = useState(false);
   const { fetchNodesState } = useFetchNodes();
   const { isLoading, nodes } = fetchNodesState;
-
-  // if (isLoading) {
-  //   return <p>Loading ...</p>;
-  // }
+  const [start, setStart] = useState('');
+  const [destination, setDestination] = useState('');
+  const [showRoute, setShowRoute] = useState(false);
 
   return (
     <div>
-      <Map nodes={nodes} />
+      <Map
+        nodes={nodes}
+        start={setStart}
+        destination={setDestination}
+        showRoute={showRoute}
+        setShowRoute={setShowRoute}
+      />
       <Panel isFullscreen={isExpandMode}>
         {isExpandMode && (
           <CloseWrapper press={() => setIsExpandMode(false)}>
@@ -51,13 +56,13 @@ export default function App() {
           </LeftWrapper>
           <div>
             <InputWrapper>
-              <Input placeholder='Starting point' />
+              <Input placeholder='Starting point' value={start} />
             </InputWrapper>
 
             <Separator />
 
             <InputWrapper>
-              <Input placeholder='Arrival point' />
+              <Input placeholder='Arrival point' value={destination} />
             </InputWrapper>
           </div>
         </ContentWrapper>
@@ -70,7 +75,11 @@ export default function App() {
           </LeftWrapper>
           <div>
             <InputWrapper>
-              <Submit placeholder='Go!' value={'Go!'} />
+              <Submit
+                placeholder='Go!'
+                value={'Go!'}
+                onClick={() => setShowRoute(true)}
+              />
             </InputWrapper>
           </div>
         </ContentWrapper>
