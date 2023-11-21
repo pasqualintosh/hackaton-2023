@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   BottomSection,
   Close,
@@ -16,18 +16,19 @@ import {
   Pin,
   Separator,
   Submit,
-} from './components';
-import { Landing } from './components/landing';
-import useFetchNodes from './hooks/use-fetch-data';
+} from "./components";
+import { Landing } from "./components/landing";
+import useFetchNodes from "./hooks/use-fetch-data";
 
 export default function App() {
   const [isExpandMode, setIsExpandMode] = useState(false);
   const { fetchNodesState } = useFetchNodes();
   const { isLoading, nodes } = fetchNodesState;
-  const [start, setStart] = useState('');
-  const [destination, setDestination] = useState('');
+  const [start, setStart] = useState("");
+  const [destination, setDestination] = useState("");
   const [showRoute, setShowRoute] = useState(false);
-
+  window.console.log("HELLO", isLoading, nodes);
+  if (isLoading) return <>loading</>;
   return (
     <div>
       <Map
@@ -46,7 +47,7 @@ export default function App() {
         <ContentWrapper>
           <LeftWrapper>
             <IconWrapper>
-              <div className='bg-white w-[10px] h-[10px] rounded-3xl'></div>
+              <div className="bg-white w-[10px] h-[10px] rounded-3xl"></div>
             </IconWrapper>
             <Dots />
             <IconWrapper>
@@ -55,13 +56,13 @@ export default function App() {
           </LeftWrapper>
           <div>
             <InputWrapper>
-              <Input placeholder='Starting point' value={start} />
+              <Input placeholder="Starting point" value={start} />
             </InputWrapper>
 
             <Separator />
 
             <InputWrapper>
-              <Input placeholder='Arrival point' value={destination} />
+              <Input placeholder="Arrival point" value={destination} />
             </InputWrapper>
           </div>
         </ContentWrapper>
@@ -75,8 +76,8 @@ export default function App() {
           <div>
             <InputWrapper>
               <Submit
-                placeholder='Go!'
-                value={'Go!'}
+                placeholder="Go!"
+                value={"Go!"}
                 onClick={() => setShowRoute(true)}
               />
             </InputWrapper>
@@ -94,8 +95,8 @@ export default function App() {
 
         <BottomSection
           stop={20}
-          stops={['Ancona', 'Agrigiento', 'Firenze', 'Roma']}
-          km='15'
+          stops={["Ancona", "Agrigiento", "Firenze", "Roma"]}
+          km="15"
           isFullscreen={isExpandMode}
         />
       </Panel>

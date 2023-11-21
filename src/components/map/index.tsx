@@ -5,22 +5,22 @@ import {
   Marker,
   Popup,
   Source,
-} from 'react-map-gl';
-import { INode } from '../../hooks/use-fetch-data';
-import { useMemo, useRef, useState } from 'react';
-import { DestinationPoint, StartPoint } from '..';
+} from "react-map-gl";
+import { INode } from "../../hooks/use-fetch-data";
+import { useMemo, useRef, useState } from "react";
+import { DestinationPoint, StartPoint } from "..";
+import useFetchTrips from "../../hooks/use-fetch-trips";
 
 export const layer = {
-  id: 'route',
-  type: 'line',
-  source: 'route',
+  type: "line",
+  source: "route",
   layout: {
-    'line-join': 'round',
-    'line-cap': 'round',
+    "line-join": "round",
+    "line-cap": "round",
   },
   paint: {
-    'line-color': 'blue',
-    'line-width': 8,
+    "line-color": "blue",
+    "line-width": 8,
   },
 };
 
@@ -41,23 +41,24 @@ interface IProps {
 }
 
 export interface IPopupProps {
-  type: 'start' | 'end';
+  id: number;
+  type: "start" | "end";
   label: string;
   latitude: number;
   longitude: number;
 }
 function PopupContent({ type, label }: IPopupProps) {
   return (
-    <div className='bg-white rounded-xl justify-center items-center px-1'>
-      <div className='flex flex-row justify-center items-center'>
-        <div className='mr-5'>
-          {type === 'start' ? <StartPoint /> : <DestinationPoint />}
+    <div className="bg-white rounded-xl justify-center items-center px-1">
+      <div className="flex flex-row justify-center items-center">
+        <div className="mr-5">
+          {type === "start" ? <StartPoint /> : <DestinationPoint />}
         </div>
-        <div className=''>
-          <p className='font-semibold text-md text-primary-grey'>
-            {type === 'start' ? 'Starting point' : 'Destination'}
+        <div className="">
+          <p className="font-semibold text-md text-primary-grey">
+            {type === "start" ? "Starting point" : "Destination"}
           </p>
-          <p className='font-semibold text-xs '>{label}</p>
+          <p className="font-semibold text-xs ">{label}</p>
         </div>
       </div>
     </div>
@@ -73,19 +74,11 @@ export function Map({
 }: IProps) {
   const [popupA, setPopupA] = useState<IPopupProps | undefined>(undefined);
   const [popupB, setPopupB] = useState<IPopupProps | undefined>(undefined);
+  const canFetch = !!popupA && !!popupB;
   const mapRef = useRef<MapRef>(null);
 
-  const route = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [popupA?.longitude, popupA?.latitude],
-        [popupB?.longitude, popupB?.latitude],
-      ],
-    },
-  };
+  const { fetchTripsState } = useFetchTrips(popupA?.id, popupB?.id, canFetch);
+  const { result } = fetchTripsState;
 
   const pins = useMemo(
     () =>
@@ -105,22 +98,24 @@ export function Map({
             key={`marker-${index}`}
             longitude={node.longitude}
             latitude={node.latitude}
-            anchor='top'
+            anchor="top"
             onClick={(e) => {
               e.originalEvent.stopPropagation();
               if (!popupA) {
                 start(node.name);
                 setPopupA({
-                  type: 'start',
+                  id: node.id,
+                  type: "start",
                   latitude: node.latitude,
                   longitude: node.longitude,
                   label: node.name,
                 });
               } else {
-                console.log('aa');
+                console.log("aa");
                 destination(node.name);
                 setPopupB({
-                  type: 'end',
+                  id: node.id,
+                  type: "end",
                   latitude: node.latitude,
                   longitude: node.longitude,
                   label: node.name,
@@ -130,10 +125,10 @@ export function Map({
           >
             <div
               className={`bg-white h-[32px] w-[32px] rounded-3xl justify-center items-center flex ${
-                isSelected ? ' shadow-2xl shadow-[#ffffff80]' : ''
+                isSelected ? " shadow-2xl shadow-[#ffffff80]" : ""
               }`}
             >
-              <div className='bg-primary-grey h-[20px] w-[20px] rounded-3xl'></div>
+              <div className="bg-primary-grey h-[20px] w-[20px] rounded-3xl"></div>
             </div>
           </Marker>
         );
@@ -144,38 +139,51 @@ export function Map({
   const close = () => {
     setPopupA(undefined);
     setPopupB(undefined);
-    start('');
-    destination('');
+    start("");
+    destination("");
     setShowRoute(false);
   };
-
   return (
     <Mapbox
       ref={mapRef}
-      mapboxAccessToken='pk.eyJ1IjoicGFzcXVhbGludG9zaCIsImEiOiJja2Iwa2psZmQwNjNzMzJsb2xmY3o2b2ZoIn0.6ccSNdFNwtU0NWqKFM3VXQ'
-      style={{ width: '100%', height: '100vh' }}
+      mapboxAccessToken="pk.eyJ1IjoicGFzcXVhbGludG9zaCIsImEiOiJja2Iwa2psZmQwNjNzMzJsb2xmY3o2b2ZoIn0.6ccSNdFNwtU0NWqKFM3VXQ"
+      style={{ width: "100%", height: "100vh" }}
       initialViewState={{
         ...initialViewState,
+        latitude: 43.7799286,
+        longitude: 11.1585676,
       }}
-      mapStyle='mapbox://styles/mapbox/dark-v9'
+      mapStyle="mapbox://styles/mapbox/dark-v9"
     >
       {pins}
       {showRoute && !!popupB && (
-        <Source type='geojson' data={route}>
+        <Source
+          type="geojson"
+          data={{
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates:
+                result?.nodes?.map((el) => [el?.longitude, el?.latitude]) || [],
+            },
+          }}
+        >
           <Layer {...layer} />
         </Source>
       )}
 
       {popupA && (
         <Popup
-          anchor='center'
+          anchor="center"
           longitude={Number(popupA.longitude)}
           latitude={Number(popupA.latitude)}
           onClose={close}
         >
           <PopupContent
-            type={popupA.type}
-            label={popupA.label}
+            id={popupA?.id}
+            type={popupA?.type}
+            label={popupA?.label}
             latitude={0}
             longitude={0}
           />
@@ -183,12 +191,13 @@ export function Map({
       )}
       {popupB && (
         <Popup
-          anchor='top'
+          anchor="top"
           longitude={Number(popupB.longitude)}
           latitude={Number(popupB.latitude)}
           onClose={close}
         >
           <PopupContent
+            id={popupB?.id}
             type={popupB.type}
             label={popupB.label}
             latitude={0}
