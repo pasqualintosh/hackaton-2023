@@ -24,19 +24,26 @@ interface IBottomSectionProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
 }
 export function BottomSection(props: IBottomSectionProps) {
   return (
-    <div
-      className={`border-t-[1px] border-[#ffffff20] mt-10 px-8 pt-8 ${
-        props.isFullscreen ? 'flex flex-row items-center justify-center ' : ''
-      }`}
-    >
-      <div className=''>
-        <p className='text-white font-semibold text-2xl max-w-[266px]'>{`${props.stop} stops ${props.km} km`}</p>
-        <p className='text-[#ffffff50] text-xs max-w-[266px] '>
-          {props.stops.map((stop, index, array) =>
-            index === array.length - 1 ? `${stop}` : `${stop}, `
-          )}
-        </p>
-        {props.children}
+    <div className=' flex flex-col justify-center items-center'>
+      <div
+        className={`border-b-[1px] border-[#ffffff20] ${
+          props.isFullscreen ? 'w-[50vw] ' : 'w-[100%]'
+        } h-[40px] flex`}
+      ></div>
+      <div
+        className={`mt-10 px-8 pt-8 ${
+          props.isFullscreen ? 'flex flex-row items-center justify-center ' : ''
+        }`}
+      >
+        <div>
+          <p className='text-white font-semibold text-2xl max-w-[266px]'>{`${props.stop} stops ${props.km} km`}</p>
+          <p className='text-[#ffffff50] text-xs max-w-[266px] '>
+            {props.stops.map((stop, index, array) =>
+              index === array.length - 1 ? `${stop}` : `${stop}, `
+            )}
+          </p>
+          {props.children}
+        </div>
       </div>
     </div>
   );

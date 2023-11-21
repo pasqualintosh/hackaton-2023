@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import {
   BottomSection,
+  Close,
+  CloseWrapper,
+  ContentWrapper,
+  Dots,
+  EmptyWrapper,
   ExpandButton,
   ExpandWrapper,
   IconWrapper,
   Input,
   InputWrapper,
+  LeftWrapper,
   Map,
   Panel,
   Pin,
@@ -21,40 +27,59 @@ export default function App() {
     <div>
       <Map />
       <Panel isFullscreen={isExpandMode}>
-        <div>
-          <InputWrapper>
+        {isExpandMode && (
+          <CloseWrapper press={() => setIsExpandMode(false)}>
+            <Close />
+          </CloseWrapper>
+        )}
+        <ContentWrapper>
+          <LeftWrapper>
             <IconWrapper>
               <div className='bg-white w-[10px] h-[10px] rounded-3xl'></div>
             </IconWrapper>
-            <Input placeholder='Starting point' />
-          </InputWrapper>
-
-          <Separator />
-
-          <InputWrapper>
+            <Dots />
             <IconWrapper>
               <Pin />
             </IconWrapper>
-            <Input placeholder='Arrival point' />
-          </InputWrapper>
+          </LeftWrapper>
+          <div>
+            <InputWrapper>
+              <Input placeholder='Starting point' />
+            </InputWrapper>
 
-          <Separator isShowingBorder={false} />
+            <Separator />
 
-          <InputWrapper>
-            <div className='bg-transparent h-5 w-5' />
-            <Submit placeholder='Go!' value={'Go!'} />
-          </InputWrapper>
-          <BottomSection
-            stop={20}
-            stops={['Ancona', 'Agrigiento', 'Firenze', 'Roma']}
-            km='15'
-            isFullscreen={isExpandMode}
-          >
-            <ExpandWrapper>
+            <InputWrapper>
+              <Input placeholder='Arrival point' />
+            </InputWrapper>
+          </div>
+        </ContentWrapper>
+
+        <Separator />
+
+        <ContentWrapper>
+          <LeftWrapper>
+            <EmptyWrapper />
+          </LeftWrapper>
+          <div>
+            <InputWrapper>
+              <Submit placeholder='Go!' value={'Go!'} />
+            </InputWrapper>
+          </div>
+        </ContentWrapper>
+
+        <BottomSection
+          stop={20}
+          stops={['Ancona', 'Agrigiento', 'Firenze', 'Roma']}
+          km='15'
+          isFullscreen={isExpandMode}
+        >
+          <ExpandWrapper>
+            {!isExpandMode && (
               <ExpandButton onClick={() => setIsExpandMode(!isExpandMode)} />
-            </ExpandWrapper>
-          </BottomSection>
-        </div>
+            )}
+          </ExpandWrapper>
+        </BottomSection>
       </Panel>
       <Landing />
     </div>

@@ -17,3 +17,21 @@ export function Panel(props: IProps) {
     </div>
   );
 }
+
+export function LeftWrapper(props: React.HtmlHTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className='flex flex-col justify-around items-center'>
+      {props.children}
+    </div>
+  );
+}
+
+export function ContentWrapper(
+  props: React.HtmlHTMLAttributes<HTMLDivElement>
+) {
+  return (
+    <div className='flex flex-row justify-center items-center mx-8'>
+      {props.children}
+    </div>
+  );
+}
