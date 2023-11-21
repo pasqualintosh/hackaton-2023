@@ -19,13 +19,20 @@ import {
   Submit,
 } from './components';
 import { Landing } from './components/landing';
+import useFetchNodes from './hooks/use-fetch-data';
 
 export default function App() {
   const [isExpandMode, setIsExpandMode] = useState(false);
+  const { fetchNodesState } = useFetchNodes();
+  const { isLoading, nodes } = fetchNodesState;
+
+  // if (isLoading) {
+  //   return <p>Loading ...</p>;
+  // }
 
   return (
     <div>
-      <Map />
+      <Map nodes={nodes} />
       <Panel isFullscreen={isExpandMode}>
         {isExpandMode && (
           <CloseWrapper press={() => setIsExpandMode(false)}>
