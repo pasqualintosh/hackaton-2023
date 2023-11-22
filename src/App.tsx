@@ -1,44 +1,38 @@
 import { useState } from "react";
-import {
-  BottomSection,
-  Close,
-  CloseWrapper,
-  ContentWrapper,
-  Dots,
-  EmptyWrapper,
-  FullScreen,
-  IconWrapper,
-  Input,
-  InputWrapper,
-  LeftWrapper,
-  Map,
-  Panel,
-  Pin,
-  Separator,
-  Submit,
-} from "./components";
+import { Map } from "./components";
 import { Landing } from "./components/landing";
 import useFetchNodes from "./hooks/use-fetch-data";
 
 export default function App() {
-  const [isExpandMode, setIsExpandMode] = useState(false);
+  /* onst [isExpandMode, setIsExpandMode] = useState(false);
+  const [fetchedEdges, setFetchedEdges] = useState<{
+    stop: number;
+    stops: string[];
+    km: string;
+  }>(); */
   const { fetchNodesState } = useFetchNodes();
   const { isLoading, nodes } = fetchNodesState;
-  const [start, setStart] = useState("");
-  const [destination, setDestination] = useState("");
+  /* const [start, setStart] = useState("");
+  const [destination, setDestination] = useState(""); */
   const [showRoute, setShowRoute] = useState(false);
-  window.console.log("HELLO", isLoading, nodes);
   if (isLoading) return <>loading</>;
   return (
     <div>
       <Map
         nodes={nodes}
-        start={setStart}
-        destination={setDestination}
+        /* start={setStart}
+        destination={setDestination} */
         showRoute={showRoute}
         setShowRoute={setShowRoute}
+        /*  callbackDataFetched={(result) => {
+          setFetchedEdges({
+            stop: result.stop,
+            stops: result.stops,
+            km: result.km,
+          });
+        }} */
       />
-      <Panel isFullscreen={isExpandMode}>
+      {/* <Panel isFullscreen={isExpandMode}>
         {isExpandMode && (
           <CloseWrapper press={() => setIsExpandMode(false)}>
             <Close />
@@ -86,7 +80,7 @@ export default function App() {
 
         {!isExpandMode && (
           <div
-            className='absolute top-[18px] right-[30px]'
+            className="absolute top-[18px] right-[30px]"
             onClick={() => setIsExpandMode(!isExpandMode)}
           >
             <FullScreen />
@@ -94,12 +88,12 @@ export default function App() {
         )}
 
         <BottomSection
-          stop={20}
-          stops={["Ancona", "Agrigiento", "Firenze", "Roma"]}
-          km="15"
+          stop={fetchedEdges?.stop || 0}
+          stops={fetchedEdges?.stops || []}
+          km={fetchedEdges?.km || ""}
           isFullscreen={isExpandMode}
         />
-      </Panel>
+      </Panel> */}
       <Landing />
     </div>
   );

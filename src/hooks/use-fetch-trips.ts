@@ -15,6 +15,8 @@ interface IEdge {
 interface ResultNode {
   nodes: INode[];
   edges: IEdge[];
+  distance: string;
+  stops: string[];
 }
 
 const NODES = "https://0368-188-12-233-183.ngrok-free.app/api/v1/trips";
@@ -40,9 +42,9 @@ export default function useFetchTrips(
     React.useState<IState>(initialState);
 
   React.useEffect(() => {
-    if (!canFetch) return;
+    if (!sourceId || !targetId || !canFetch) return;
     fetchTrip();
-  }, [canFetch]);
+  }, [sourceId, targetId, canFetch]);
 
   const fetchTrip = async () => {
     const options = {
